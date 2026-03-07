@@ -1,3 +1,0 @@
-/home/fisher/Documents/py/mychat/build/CMakeFiles/chat_server.dir
-/home/fisher/Documents/py/mychat/build/CMakeFiles/edit_cache.dir
-/home/fisher/Documents/py/mychat/build/CMakeFiles/rebuild_cache.dir
