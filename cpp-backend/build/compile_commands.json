@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/fisher/Documents/py/mychat/cpp-backend/build",
+  "command": "/usr/bin/g++ -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -isystem /usr/include/jsoncpp -g -std=gnu++17 -o CMakeFiles/chat_server.dir/main.cpp.o -c /home/fisher/Documents/py/mychat/cpp-backend/main.cpp",
+  "file": "/home/fisher/Documents/py/mychat/cpp-backend/main.cpp",
+  "output": "CMakeFiles/chat_server.dir/main.cpp.o"
+}
+]
