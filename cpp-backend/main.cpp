@@ -245,7 +245,6 @@ private:
             size_t pos = content.find("画个");
             prompt = content.substr(pos + 2);
         }
-
         // Trim leading/trailing whitespace and separators
         size_t start = prompt.find_first_not_of(" :：");
         if (start == std::string::npos) {

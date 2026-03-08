@@ -26,9 +26,7 @@
         </div>
         <div class="message-content">
           <!-- Text Message -->
-          <div v-if="message.type === 'text'" class="text-message">
-            {{ message.content }}
-          </div>
+          <div v-if="message.type === 'text'" class="text-message" v-html="renderMarkdown(message.content)"></div>
           <!-- Image Message -->
           <div v-else-if="message.type === 'image'" class="image-message">
             <img :src="message.content" alt="Image" @click="previewImage(message.content)" />
@@ -75,14 +73,16 @@
           </svg>
         </label>
 
-        <input
+        <textarea
+          ref="inputRef"
           v-model="inputText"
-          type="text"
           class="text-input"
-          placeholder="Type a message..."
-          @keyup.enter="sendMessage"
+          placeholder="Type a message... (Enter to send)"
+          @keydown.enter.prevent="handleEnterKey"
+          @input="autoResize"
           :disabled="!isConnected"
-        />
+          rows="1"
+        ></textarea>
 
         <button
           class="send-btn"
@@ -107,7 +107,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { marked } from 'marked'
 import websocketService from '../services/websocket'
 
 // State
@@ -119,6 +120,7 @@ const imagePreview = ref(null)
 const previewUrl = ref(null)
 const messageListRef = ref(null)
 const imageInputRef = ref(null)
+const inputRef = ref(null)
 
 // WebSocket URL - update to match your C++ backend
 const WS_URL = 'ws://localhost:8080'
@@ -135,6 +137,36 @@ const scrollToBottom = async () => {
 const formatTime = (timestamp) => {
   const date = new Date(timestamp)
   return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+}
+
+// Render Markdown
+const renderMarkdown = (content) => {
+  return marked.parse(content)
+}
+
+// Handle Enter key (Enter to send, Shift+Enter for newline)
+const handleEnterKey = (event) => {
+  if (!event.shiftKey) {
+    sendMessage()
+  } else {
+    // Shift+Enter: insert newline
+    const start = event.target.selectionStart
+    const end = event.target.selectionEnd
+    const text = inputText.value
+    inputText.value = text.substring(0, start) + "\n" + text.substring(end)
+    nextTick(() => {
+      event.target.selectionStart = event.target.selectionEnd = start + 1
+      autoResize()
+    })
+  }
+}
+
+// Auto-resize textarea
+const autoResize = () => {
+  const el = inputRef.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 150) + 'px'
 }
 
 // Handle image upload
@@ -267,6 +299,16 @@ onMounted(() => {
 onUnmounted(() => {
   websocketService.disconnect()
 })
+
+// Reset textarea height when inputText changes to empty
+watch(inputText, (newVal) => {
+  if (!newVal.trim()) {
+    const el = inputRef.value
+    if (el) {
+      el.style.height = 'auto'
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -385,6 +427,98 @@ onUnmounted(() => {
   line-height: 1.5;
   font-size: clamp(13px, 2vw, 15px);
   color: #000;
+}
+
+.text-message :deep(p) {
+  margin: 0 0 8px 0;
+}
+
+.text-message :deep(p:last-child) {
+  margin-bottom: 0;
+}
+
+.text-message :deep(h1),
+.text-message :deep(h2),
+.text-message :deep(h3),
+.text-message :deep(h4),
+.text-message :deep(h5),
+.text-message :deep(h6) {
+  margin: 8px 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-message :deep(h1) { font-size: 1.4em; }
+.text-message :deep(h2) { font-size: 1.3em; }
+.text-message :deep(h3) { font-size: 1.2em; }
+.text-message :deep(h4) { font-size: 1.1em; }
+.text-message :deep(h5) { font-size: 1em; }
+.text-message :deep(h6) { font-size: 0.9em; }
+
+.text-message :deep(ul),
+.text-message :deep(ol) {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.text-message :deep(li) {
+  margin: 4px 0;
+}
+
+.text-message :deep(code) {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
+}
+
+.text-message :deep(pre) {
+  background: #282c34;
+  color: #abb2bf;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.text-message :deep(pre code) {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.text-message :deep(blockquote) {
+  border-left: 3px solid #667eea;
+  padding-left: 12px;
+  margin: 8px 0;
+  color: #666;
+}
+
+.text-message :deep(a) {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.text-message :deep(a:hover) {
+  text-decoration: underline;
+}
+
+.text-message :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.text-message :deep(th),
+.text-message :deep(td) {
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+}
+
+.text-message :deep(th) {
+  background: #f0f0f0;
+  font-weight: 600;
 }
 
 .image-message img {
@@ -533,6 +667,11 @@ onUnmounted(() => {
   transition: border-color 0.2s;
   min-width: 0;
   min-height: 40px;
+  max-height: 150px;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.5;
+  overflow-y: auto;
 }
 
 .text-input:focus {
