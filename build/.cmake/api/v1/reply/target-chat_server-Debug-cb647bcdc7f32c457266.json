@@ -25,13 +25,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 17,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 21,
+				"line" : 22,
 				"parent" : 0
 			}
 		]
@@ -42,18 +42,21 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++17"
+					"fragment" : "-g"
+				},
+				{
+					"fragment" : "-std=gnu++17"
 				}
 			],
 			"defines" : 
 			[
 				{
 					"backtrace" : 2,
-					"define" : "BOOST_SYSTEM_DYN_LINK"
+					"define" : "BOOST_ALL_NO_LIB"
 				},
 				{
 					"backtrace" : 2,
-					"define" : "BOOST_SYSTEM_NO_LIB"
+					"define" : "BOOST_SYSTEM_DYN_LINK"
 				}
 			],
 			"includes" : 
@@ -118,7 +121,7 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_system.so.1.83.0",
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libboost_system.so.1.74.0",
 				"role" : "libraries"
 			},
 			{
@@ -139,6 +142,11 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "-lpthread",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "/usr/lib/x86_64-linux-gnu/libcurl.so",
 				"role" : "libraries"
 			}
 		],

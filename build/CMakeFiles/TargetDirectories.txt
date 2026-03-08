@@ -1,0 +1,3 @@
+/home/xiangyv/proj/pypro/tzb/build/CMakeFiles/chat_server.dir
+/home/xiangyv/proj/pypro/tzb/build/CMakeFiles/edit_cache.dir
+/home/xiangyv/proj/pypro/tzb/build/CMakeFiles/rebuild_cache.dir

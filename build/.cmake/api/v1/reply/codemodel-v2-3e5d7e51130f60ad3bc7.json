@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "chat_server::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-chat_server-Debug-4540f0ad4bf1271e19a0.json",
+					"jsonFile" : "target-chat_server-Debug-cb647bcdc7f32c457266.json",
 					"name" : "chat_server",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/fisher/Documents/py/mychat/build",
-		"source" : "/home/fisher/Documents/py/mychat/cpp-backend"
+		"build" : "/home/xiangyv/proj/pypro/tzb/build",
+		"source" : "/home/xiangyv/proj/pypro/tzb/cpp-backend"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 6
+		"minor" : 3
 	}
 }

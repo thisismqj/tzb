@@ -1,4 +1,4 @@
-# Install script for directory: /home/fisher/Documents/py/mychat/cpp-backend
+# Install script for directory: /home/xiangyv/proj/pypro/tzb/cpp-backend
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/fisher/Documents/py/mychat/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/xiangyv/proj/pypro/tzb/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
