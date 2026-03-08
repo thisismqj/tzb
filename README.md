@@ -48,8 +48,14 @@ mkdir build && cd build
 cmake ..
 make
 
+#添加环境变量
+source env.sh
+
 # 运行服务器
 ./chat_server
+
+#可选参数
+--api: deepseek, doubao
 ```
 
 ## WebSocket 消息格式
