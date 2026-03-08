@@ -65,18 +65,20 @@ class WebSocketService {
     }
   }
 
-  sendTextMessage(text) {
+  sendTextMessage(text, model = 'deepseek') {
     this.sendMessage({
       type: 'text',
       content: text,
+      model: model,
       timestamp: Date.now()
     })
   }
 
-  sendImageMessage(base64Data) {
+  sendImageMessage(base64Data, model = 'deepseek') {
     this.sendMessage({
       type: 'image',
       content: base64Data,
+      model: model,
       timestamp: Date.now()
     })
   }

@@ -657,18 +657,27 @@ private:
 
             std::string type = root["type"].asString();
             std::string content = root["content"].asString();
+            std::string model = root["model"].asString(); // 新增：解析模型
 
-            std::cout << "Received " << type << " message from client" << std::endl;
+            // 根据模型设置 API 类型
+            ApiType apiType = API_DEEPSEEK; // 默认
+            if (model == "doubao") {
+                apiType = API_DOUBAO;
+            } else if (model == "deepseek") {
+                apiType = API_DEEPSEEK;
+            }
+
+            std::cout << "Received " << type << " message from client, model: " << model << std::endl;
 
             // Process message and generate response
-            processMessage(hdl, type, content);
+            processMessage(hdl, type, content, apiType);
 
         } catch (const std::exception& e) {
             std::cerr << "Error parsing message: " << e.what() << std::endl;
         }
     }
 
-    void processMessage(websocketpp::connection_hdl hdl, const std::string& type, const std::string& content) {
+    void processMessage(websocketpp::connection_hdl hdl, const std::string& type, const std::string& content, ApiType apiType) {
         Json::Value response;
 
         if (type == "text") {
@@ -678,7 +687,7 @@ private:
             // Support commands: "/image <prompt>" or "生成图片：<prompt>"
             if (isImageGenerationRequest(content)) {
                 // If Doubao API is selected, generate image; otherwise, inform user
-                if (m_apiType == API_DOUBAO) {
+                if (apiType == API_DOUBAO) {
                     std::string prompt = extractImagePrompt(content);
                     
                     if (prompt.empty()) {
@@ -731,7 +740,7 @@ private:
             // Not an image request - handle based on API type
             sendTypingIndicator(hdl, true);
 
-            if (m_apiType == API_DOUBAO) {
+            if (apiType == API_DOUBAO) {
                 // Doubao: simple echo with delay
                 std::this_thread::sleep_for(std::chrono::milliseconds(500));
                 response["type"] = "text";
@@ -1097,7 +1106,7 @@ private:
         size_t encodedSize = len * 2;
         std::vector<unsigned char> encoded(encodedSize);
 
-        EVP_EncodeInit(ctx);
+        EVP_EncodeInit(ctx); 
         int encodedLen = 0;
         EVP_EncodeUpdate(ctx, encoded.data(), &encodedLen, data, len);
         int finalLen = 0;

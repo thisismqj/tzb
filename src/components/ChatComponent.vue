@@ -54,6 +54,15 @@
 
     <!-- Input Area -->
     <div class="input-area">
+      <!-- Model Selector -->
+      <div class="model-selector">
+        <label for="model-select">选择模型：</label>
+        <select id="model-select" v-model="selectedModel">
+          <option value="deepseek">DeepSeek</option>
+          <option value="doubao">DouBao</option>
+        </select>
+      </div>
+
       <!-- Image Preview -->
       <div v-if="imagePreview" class="image-preview">
         <img :src="imagePreview" alt="Preview" />
@@ -119,6 +128,7 @@ const imagePreview = ref(null)
 const previewUrl = ref(null)
 const messageListRef = ref(null)
 const imageInputRef = ref(null)
+const selectedModel = ref('deepseek') // 默认模型
 
 // WebSocket URL - update to match your C++ backend
 const WS_URL = 'ws://localhost:8080'
@@ -171,11 +181,12 @@ const sendMessage = () => {
       id: Date.now(),
       type: 'text',
       content: inputText.value.trim(),
+      model: selectedModel.value,
       timestamp: Date.now(),
       isUser: true
     }
     messages.value.push(message)
-    websocketService.sendTextMessage(message.content)
+    websocketService.sendTextMessage(message.content, selectedModel.value)
     inputText.value = ''
     scrollToBottom()
     return
@@ -187,11 +198,12 @@ const sendMessage = () => {
       id: Date.now(),
       type: 'image',
       content: imagePreview.value,
+      model: selectedModel.value,
       timestamp: Date.now(),
       isUser: true
     }
     messages.value.push(message)
-    websocketService.sendImageMessage(imagePreview.value)
+    websocketService.sendImageMessage(imagePreview.value, selectedModel.value)
     imagePreview.value = null
     scrollToBottom()
     return
@@ -204,11 +216,12 @@ const sendMessage = () => {
       id: Date.now(),
       type: 'text',
       content: inputText.value.trim(),
+      model: selectedModel.value,
       timestamp: Date.now(),
       isUser: true
     }
     messages.value.push(textMessage)
-    websocketService.sendTextMessage(textMessage.content)
+    websocketService.sendTextMessage(textMessage.content, selectedModel.value)
     inputText.value = ''
 
     // Send image message
@@ -216,11 +229,12 @@ const sendMessage = () => {
       id: Date.now() + 1,
       type: 'image',
       content: imagePreview.value,
+      model: selectedModel.value,
       timestamp: Date.now(),
       isUser: true
     }
     messages.value.push(imageMessage)
-    websocketService.sendImageMessage(imagePreview.value)
+    websocketService.sendImageMessage(imagePreview.value, selectedModel.value)
     imagePreview.value = null
 
     scrollToBottom()
@@ -448,6 +462,25 @@ onUnmounted(() => {
   border-top: 1px solid #e0e0e0;
   flex-shrink: 0;
   width: 100%;
+}
+
+.model-selector {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.model-selector label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.model-selector select {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
 .image-preview {
