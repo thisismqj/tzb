@@ -26,9 +26,7 @@
         </div>
         <div class="message-content">
           <!-- Text Message -->
-          <div v-if="message.type === 'text'" class="text-message">
-            {{ message.content }}
-          </div>
+          <div v-if="message.type === 'text'" class="text-message" v-html="renderMarkdown(message.content)"></div>
           <!-- Image Message -->
           <div v-else-if="message.type === 'image'" class="image-message">
             <img :src="message.content" alt="Image" @click="previewImage(message.content)" />
@@ -118,6 +116,19 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import websocketService from '../services/websocket'
+import MarkdownIt from 'markdown-it'
+
+// 创建markdown实例
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  typographer: true
+})
+
+// 渲染markdown函数
+const renderMarkdown = (content) => {
+  return md.render(content)
+}
 
 // State
 const messages = ref([])
@@ -399,6 +410,104 @@ onUnmounted(() => {
   line-height: 1.5;
   font-size: clamp(13px, 2vw, 15px);
   color: #000;
+}
+
+/* Markdown styles */
+.text-message h1,
+.text-message h2,
+.text-message h3,
+.text-message h4,
+.text-message h5,
+.text-message h6 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.text-message h1 { font-size: 1.5em; }
+.text-message h2 { font-size: 1.3em; }
+.text-message h3 { font-size: 1.1em; }
+
+.text-message p {
+  margin: 0.5em 0;
+}
+
+.text-message ul,
+.text-message ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.text-message li {
+  margin: 0.25em 0;
+}
+
+.text-message code {
+  background-color: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+.text-message pre {
+  background-color: #f4f4f4;
+  padding: 1em;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0.5em 0;
+}
+
+.text-message pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.text-message blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 1em;
+  margin: 0.5em 0;
+  color: #666;
+  font-style: italic;
+}
+
+.text-message a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.text-message a:hover {
+  text-decoration: underline;
+}
+
+.text-message strong,
+.text-message b {
+  font-weight: bold;
+}
+
+.text-message em,
+.text-message i {
+  font-style: italic;
+}
+
+.text-message table {
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+.text-message th,
+.text-message td {
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  text-align: left;
+}
+
+.text-message th {
+  background-color: #f8f8f8;
+  font-weight: bold;
 }
 
 .image-message img {
